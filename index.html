@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Desk Clock</title>
+<style>
+    body {
+        margin: 0;
+        height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background-color: #f0f0f0; /* Kolor tła strony */
+    }
+    .clock {
+        width: 300px;
+        height: 300px;
+        border: 10px solid #333;
+        border-radius: 50%;
+        position: relative;
+        background-color: #fff;
+    }
+    .hour-mark, .number {
+        position: absolute;
+        font-size: 16px;
+        font-weight: bold;
+    }
+    .hour-mark {
+        width: 2px;
+        height: 10px;
+        background-color: #000;
+        top: 10px;
+        left: 50%;
+        transform-origin: bottom;
+        transform: translateX(-50%);
+    }
+    .number {
+        width: 20px;
+        height: 20px;
+        border-radius: 50%;
+        background-color: #333;
+        color: #fff;
+        text-align: center;
+        line-height: 20px;
+    }
+    .hand {
+        position: absolute;
+        background-color: black;
+        transform-origin: bottom center;
+    }
+    .hour-hand {
+        height: 60px;
+        width: 6px;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -100%) rotate(0deg);
+    }
+    .minute-hand {
+        height: 80px;
+        width: 4px;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -100%) rotate(0deg);
+    }
+    .second-hand {
+        height: 90px;
+        width: 2px;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -100%) rotate(0deg);
+    }
+    .center-dot {
+        width: 12px;
+        height: 12px;
+        background-color: black;
+        border-radius: 50%;
+        position: absolute;
+        top: calc(50% - 6px);
+        left: calc(50% - 6px);
+    }
+</style>
+</head>
+<body>
+<div class="clock" id="clock">
+</div>
+
+<script>
+    const clock = document.getElementById('clock');
+    const numbers = ['12', '1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11'];
+
+    // Utwórz cyfry na tarczy zegara
+    numbers.forEach((number, index) => {
+        const angle = index * (360 / numbers.length);
+        const radians = angle * (Math.PI / 180);
+        const radius = 120; // promień tarczy zegara
+
+        const x = 150 + Math.sin(radians) * radius;
+        const y = 150 - Math.cos(radians) * radius;
+
+        const numberElement = document.createElement('div');
+        numberElement.classList.add('number');
+        numberElement.textContent = number;
+        numberElement.style.left = `${x}px`;
+        numberElement.style.top = `${y}px`;
+
+        clock.appendChild(numberElement);
+    });
+
+    // Utwórz wskazówki zegara
+    const hourHand = document.createElement('div');
+    hourHand.classList.add('hand', 'hour-hand');
+    clock.appendChild(hourHand);
+
+    const minuteHand = document.createElement('div');
+    minuteHand.classList.add('hand', 'minute-hand');
+    clock.appendChild(minuteHand);
+
+    const secondHand = document.createElement('div');
+    secondHand.classList.add('hand', 'second-hand');
+    clock.appendChild(secondHand);
+
+    function updateClock() {
+        const now = new Date();
+        const hour = now.getHours() % 12; // Zamień na tryb 12-godzinny
+        const minute = now.getMinutes();
+        const second = now.getSeconds();
+
+        const hourDeg = (hour * 30) + (minute / 2); // 360 stopni / 12 godzin = 30 stopni na godzinę; każda minuta dodaje 0.5 stopnia
+        const minuteDeg = (minute * 6) + (second / 10); // 360 stopni / 60 minut = 6 stopni na minutę; każda sekunda dodaje 0.1 stopnia
+        const secondDeg = second * 6; // 360 stopni / 60 sekund = 6 stopni na sekundę
+
+        hourHand.style.transform = `translate(-50%, -100%) rotate(${hourDeg}deg)`; // Obrót wskazówki godzin
+        minuteHand.style.transform = `translate(-50%, -100%) rotate(${minuteDeg}deg)`; // Obrót wskazówki minut
+        secondHand.style.transform = `translate(-50%, -100%) rotate(${secondDeg}deg)`; // Obrót wskazówki sekund
+    }
+
+    setInterval(updateClock, 1000);
+</script>
+</body>
+</html>
+
+
+
+
+
